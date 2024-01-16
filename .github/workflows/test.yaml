@@ -29,6 +29,7 @@ jobs:
         run: npm install
 
   test:
+    needs: prepare
     name: Test generator as dependency with Node ${{ matrix.node }}
     runs-on: ubuntu-latest
     strategy:
