@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-run-test:
+  run-test:
     needs: prepare
     runs-on: ubuntu-latest
     name: Run test
