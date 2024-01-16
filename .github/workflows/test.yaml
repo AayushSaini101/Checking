@@ -12,26 +12,12 @@ jobs:
           - '4873:4873'
         volumes:
           - './verdaccio:/verdaccio/conf'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2.4.0
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build and package
-        run: npm run build
-
-      - name: Publish to Verdaccio
-        run: npm publish --registry http://localhost:4873
-
-      - name: Cleanup
-        run: npm ci
+    strategy:
+          matrix:
+            node: [ '12', '14', '16', '18' ]
+          steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+            - name: Run test
+              run: NODE_IMAGE_TAG=${{ matrix.node }} docker-compose up --abort-on-container-exit --remove-orphans
+              working-directory: ./test/test-project
