@@ -1,9 +1,5 @@
 name: CI Test
-
-on:
-  pull_request:
-    branches:
-      - '*'
+on: ['pull_request']
 
 jobs:
   prepare:
@@ -15,8 +11,6 @@ jobs:
         container_name: 'verdaccio'
         ports:
           - '4873:4873'
-        volumes:
-          - './verdaccio:/verdaccio/conf'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.4.0
