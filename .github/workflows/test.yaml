@@ -1,6 +1,9 @@
 name: CI Test
 
-on: ['pull_request']
+on:
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   prepare:
@@ -37,4 +40,3 @@ jobs:
 
       - name: Cleanup
         run: npm ci
-
