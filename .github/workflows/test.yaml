@@ -9,15 +9,6 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     name: ci
-    services:
-      verdaccio:
-        image: verdaccio/verdaccio:5
-        extra_hosts:
-          - "host.docker.internal:host-gateway"
-        ports:
-          - '4873:4873'
-        volumes:
-          - './verdaccio:/verdaccio/conf'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.4.0
@@ -30,18 +21,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-  test:
+run-test:
     needs: prepare
-    name: Test generator as dependency with Node ${{ matrix.node }}
     runs-on: ubuntu-latest
+    name: Run test
+    container:
+      image: verdaccio/verdaccio:5
+    ports:
+      - '4873:4873'
     strategy:
       matrix:
-        node: [ '12', '14', '16', '18' ]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Run test
-        run: |
-          NODE_IMAGE_TAG=${{ matrix.node }} docker-compose up --abort-on-container-exit --remove-orphans
-        working-directory: ./test/test-project
+        node: ['12', '14', '16', '18']
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+        - name: Run test
+          run: NODE_IMAGE_TAG=${{ matrix.node }} docker-compose up --abort-on-container-exit --remove-orphans
+          working-directory: ./test/test-project
