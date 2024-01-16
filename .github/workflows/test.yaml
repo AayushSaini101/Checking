@@ -1,4 +1,4 @@
-name: CI Test
+name: CI Test Workflow
 
 on:
   pull_request:
@@ -6,6 +6,21 @@ on:
       - '*'
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    name: CI
+    container:
+      image: verdaccio/verdaccio:5
+      ports:
+        - '4873:4873'
+      volumes:
+        - './verdaccio:/verdaccio/conf'
+    strategy:
+      matrix:
+        node: ['12', '14', '16', '18']
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
 
   run-test:
     needs: prepare
@@ -13,8 +28,8 @@ jobs:
     name: Run test
     container:
       image: verdaccio/verdaccio:5
-    ports:
-      - '4873:4873'
+      ports:
+        - '4873:4873'
     strategy:
       matrix:
         node: ['12', '14', '16', '18']
