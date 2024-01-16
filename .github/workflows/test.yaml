@@ -1,23 +1,43 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
-on: ['pull_request']
-  # Allows you to run this workflow manually from the Actions tab
+on:
+  pull_request:
+    branches:
+      - '*'
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   prepare:
-        runs-on: ubuntu-latest
-        name: ci
-        services:
-          verdaccio:
-            image: verdaccio/verdaccio:5
-            container_name: 'verdaccio'
-            ports:
-              - '4873:4873'
-            volumes:
-              - './verdaccio:/verdaccio/conf'
+    runs-on: ubuntu-latest
+    name: CI
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio:5
+        container_name: 'verdaccio'
+        ports:
+          - '4873:4873'
+        volumes:
+          - './verdaccio:/verdaccio/conf'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.4.0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build and package
+        run: npm run build
+
+      - name: Publish to Verdaccio
+        run: npm publish --registry http://localhost:4873
+
+      - name: Cleanup
+        run: npm ci
+
