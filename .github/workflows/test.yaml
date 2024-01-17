@@ -16,8 +16,9 @@ jobs:
           - './verdaccio/conf:/verdaccio/conf:z'
           - './verdaccio/storage:/verdaccio/storage:z'
     steps:
+    - name: Adjust Permissions
+      run: chmod -R 777 /home/runner/work/Checking/Checking/verdaccio
     - uses: actions/checkout@v3
-      options: --user root
     - name: Use Node
       uses: actions/setup-node@v2
       with:
