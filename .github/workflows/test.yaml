@@ -10,6 +10,9 @@ jobs:
     services:
       verdaccio:
         image: verdaccio/verdaccio:5
+        volumes:
+          - ./verdaccio/conf:/verdaccio/conf:z
+          - ./verdaccio/storage:/verdaccio/storage:z
         ports:
           - 4873:4873
     steps:
@@ -23,3 +26,4 @@ jobs:
     - name: Test Registry
       run: npm run test:registry
       working-directory: ./test/test-project
+
