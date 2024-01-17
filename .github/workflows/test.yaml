@@ -21,6 +21,8 @@ jobs:
         node-version: 16
     - name: Install
       run: npm install
+    - name: Installing login
+      run: npm install -g npm-cli-login
     - name: Test
       run: npm test
     - name: credentials
