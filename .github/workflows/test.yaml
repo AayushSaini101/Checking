@@ -21,6 +21,10 @@ jobs:
         node-version: 16
     - name: Install
       run: npm install
+    - name: Test
+      run: npm test
+    - name: credentials
+      run: npm run login
     - name: Test Registry
       run: npm run test:registry
       working-directory: ./test/test-project
