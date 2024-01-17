@@ -1,36 +1,30 @@
 name: CI Test
-on: ['pull_request']
 
+on: ['pull_request']
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    outputs:
+      super-cli: ${{ steps.set-crashers-count.outputs.super-cli }}
     name: ci
     services:
       verdaccio:
         image: verdaccio/verdaccio:5
-        container_name: 'verdaccio'
         ports:
-          - '4873:4873'
+          - 4873:4873
+        volumes:
+          - './verdaccio/conf:/verdaccio/conf:z'
+          - './verdaccio/storage:/verdaccio/storage:z'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2.4.0
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build and package
-        run: npm run build
-
-      - name: Publish to Verdaccio
-        run: npm publish --registry http://localhost:4873
-
-      - name: Cleanup
-        run: npm ci
+    - name: Adjust Permissions
+      run: chmod -R 777 /home/runner/work/Checking/Checking/verdaccio
+    - uses: actions/checkout@v3
+    - name: Use Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - name: Install
+      run: npm install
+    - name: Testing Registry
+      run: npm run test:registry
+      working-directory: ./test/test-project
