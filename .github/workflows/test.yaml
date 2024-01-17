@@ -15,8 +15,8 @@ jobs:
         image: verdaccio/verdaccio:5
         ports:
           - '4873:4873'
-        extra_hosts:
-          - "host.docker.internal:host-gateway"
+        environment:
+          - VERDACCIO_PORT=4873
         volumes:
           - './verdaccio:/verdaccio/conf'
     strategy:
