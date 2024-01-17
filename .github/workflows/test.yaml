@@ -10,6 +10,9 @@ jobs:
     services:
       verdaccio:
         image: verdaccio/verdaccio:5
+        volumes:
+          - './verdaccio/conf:/verdaccio/conf:z'
+          - './verdaccio/storage:/verdaccio/storage:z'
         ports:
           - 4873:4873
     steps:
@@ -19,20 +22,8 @@ jobs:
       with:
         node-version: 16
     - name: Install
-      run: npm install --registry http://localhost:4873 --loglevel verbose
-    - name: Test
-      run: npm test
-    - name: credentials
-      run: npm run login
-    - name: Publishing
-      run: npm publish --registry http://localhost:4873
-    - name: install global cli
-      run: npm i -g install docker-integration-test --registry http://localhost:4873
-    - name: run cli
-      run: echo "CLI_OUTPUT=$(super-cli)" >> $GITHUB_ENV
-      id: cli-output
-    - name: print output
-      run: echo "$CLI_OUTPUT"
-    - name: validate
-      if: env.CLI_OUTPUT != 'here this is my CLI'
-      run: exit 1
+      run: npm install
+    - name: Test Registry
+      run: npm run test:registry
+      working-directory: ./test/test-project
+
