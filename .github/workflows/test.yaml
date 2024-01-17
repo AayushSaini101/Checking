@@ -1,28 +1,37 @@
-name: CI Test
+#This workflow runs the tests in the test projects to make sure the generator works as a library where it is a Node dependency along with the template.
 
-on: ['pull_request']
+name: CI Test Workflow
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    outputs:
-      super-cli: ${{ steps.set-crashers-count.outputs.super-cli }}
-    name: ci
+    name: CI
     services:
       verdaccio:
         image: verdaccio/verdaccio:5
         ports:
-          - 4873:4873
+          - '4873:4873'
         volumes:
-          - './verdaccio/conf:/verdaccio/conf:z'
-          - './verdaccio/storage:/verdaccio/storage:z'
-    steps:
-    - uses: actions/checkout@v3
-    - name: Use Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-    - name: Install
-      run: npm install
-    - name: Testing Registry
-      run: npm run test:registry
-      working-directory: ./test/test-project
+          - './verdaccio:/verdaccio/conf'
+    strategy:
+      matrix:
+        node: ['12', '14', '16', '18']
+      steps:
+        - uses: actions/checkout@v2.4.0
+        - name: Use Node
+          uses: actions/setup-node@v2
+          with:
+               node-version: 16
+        - name: Install
+          run: npm install
+        - name: Install
+        - name: Run test
+          run:  npm run test:registry
+          working-directory: ./test/test-project
+
+
