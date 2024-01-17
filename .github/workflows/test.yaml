@@ -1,30 +1,28 @@
-#This workflow runs the tests in the test projects to make sure the generator works as a library where it is a Node dependency along with the template.
-name: Test using test project
+name: CI Test
 
-on:
-  pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
-
+on: ['pull_request']
 jobs:
-  test:
-    if: github.event.pull_request.draft == false
-    name: Test generator as dependency with Node ${{ matrix.node }}
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      super-cli: ${{ steps.set-crashers-count.outputs.super-cli }}
+    name: ci
     services:
       verdaccio:
         image: verdaccio/verdaccio:5
         ports:
-          - '4873:4873'
-        env:
-          - 'VERDACCIO_PORT:4873'
+          - 4873:4873
         volumes:
-          - './verdaccio:/verdaccio/conf'
-    strategy:
-      matrix:
-        node: [ '12', '14', '16', '18' ]
+          - './verdaccio/conf:/verdaccio/conf:z'
+          - './verdaccio/storage:/verdaccio/storage:z'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Run test
-        run: NODE_IMAGE_TAG=${{ matrix.node }} docker-compose up --abort-on-container-exit --remove-orphans
-        working-directory: ./test/test-project
+    - uses: actions/checkout@v2.4.0
+    - name: Use Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - name: Install
+      run: npm install
+    - name: Testing Registry
+      run: npm run test:registry
+      working-directory: ./test/test-project
