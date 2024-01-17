@@ -16,7 +16,7 @@ jobs:
           - './verdaccio/conf:/verdaccio/conf:z'
           - './verdaccio/storage:/verdaccio/storage:z'
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3
     - name: Use Node
       uses: actions/setup-node@v2
       with:
