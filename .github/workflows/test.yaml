@@ -16,7 +16,7 @@ jobs:
         ports:
           - '4873:4873'
         env:
-          - VERDACCIO_PORT=4873
+          - 'VERDACCIO_PORT:4873'
         volumes:
           - './verdaccio:/verdaccio/conf'
     strategy:
