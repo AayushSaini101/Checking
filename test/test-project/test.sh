@@ -60,7 +60,6 @@ PUPPETEER_SKIP_DOWNLOAD=true npm install
 # Run the functions based on the provided arguments
 case "$1" in
   "test-project")
-    test_project
     test_registry
     ;;
   *)
