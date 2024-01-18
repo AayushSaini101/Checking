@@ -21,7 +21,7 @@ services:
     command: bash /apptemp/test/test-project/test-entrypoint.sh
     networks:
       - mynetwork
-
+  
 networks:
   mynetwork:
     driver: bridge
